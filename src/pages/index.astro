@@ -101,17 +101,16 @@ function getStatusIcon(status: string): string {
       </header>
 
       <section style="margin-bottom: 6rem;">
-        <p style="font-size: 1.3rem; color: var(--text-main);">
-          你好我是 Jeambo。非单偶制关系实践者，译者。<br>
-          创建了中文多元关系文库 <a href="https://polycn.org" target="_blank">PolyCN.org</a>。<br>
-          在秩序与混沌之间，寻找爱的更多可能。
-        </p>
+        <p style="font-size: 1.3rem; color: var(--text-main);">你好，我是 Jeambo。非单偶制关系实践者，独立译者。</p>
+		<p style="font-size: 1.3rem; color: var(--text-main);">创建了中文多元关系文库 <a href="https://polycn.org" target="_blank">PolyCN.org</a>，希望为中文非单偶制社群提供丰富的资源。愿每个人都可以爱得自由，爱得勇敢。</p>
+        <p style="font-size: 1.3rem; color: var(--text-main);">个人关系倾向为 SOLO POLY。</p>
+        
       </section>
 
       <hr class="divider" />
 
       <section style="margin-bottom: 6rem;">
-        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">TRANSLATIONS</h2>
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">已有译注 TRANSLATIONS</h2>
         <div class="scrollbar-custom" style="display: flex; gap: 2.5rem; padding-bottom: 1.5rem;">
           {displayList.filter(b => b.statusCategory === 'completed').map(book => (
             /* 加了 img-link 类，防止出现下划线 */
@@ -126,7 +125,7 @@ function getStatusIcon(status: string): string {
       </section>
 
       <section style="margin-bottom: 6rem;">
-        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">WORK LOG</h2>
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">工作进度 WORK LOG</h2>
         
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
           {displayList.map((book) => (
@@ -174,7 +173,7 @@ function getStatusIcon(status: string): string {
       <hr class="divider" />
 
       <section>
-        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">DIGITAL GARDEN</h2>
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">思考花园 DIGITAL GARDEN</h2>
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
           {gardenPosts.map((post: CollectionEntry<'garden'>) => (
             /* 这里的链接应用统一样式，去掉了 border-bottom 内联样式 */
