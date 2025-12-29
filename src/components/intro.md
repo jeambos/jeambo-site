@@ -12,10 +12,17 @@
 
 ### 当前译作
 
-- （进行中）*More Than Two (Second Edition)*
-- Small webpage sizes (~290B for this page)
-- Add blog posts by adding the Markdown files in the `src/content/blog` directory
-- SEO-friendly with canonical URLs and OpenGraph data
-- Filter your blog posts by using tags
-- Use DuckDuckGo to search your blog
-- Automatically generated RSS feed and sitemap
+- [ ] （进行中）*More Than Two (Second Edition)* 
+- [x] （已完成）*The Ethical Slut (2013 Edition)* 道德浪女简体中文版，[在 PolyCN 文库查看](https://polycn.org/library/books/ethical-slut)
+- [x] （已完成）*A World Beyond Monogamy* 超越单偶制的世界，[在 PolyCN 文库查看](https://polycn.org/library/books/beyond-monogamy)
+
+### 与 AI 的合作
+
+技术的进步对于我们非专业译者来说，不但不是取代我们的敌人，反而是帮助我们大展身手的利器：我们不再需要在逐字逐句的机械劳动中消磨脑力，并且犯下漏看字母或者介词这种低级错误—— AI 会给我们带来一份`平庸，机械，但是刚好够用`的译文。
+
+译者终于可以腾出精力去`钻研`作者原本想表达什么、`推敲`如何更好地用中文来传递原文长难句想表达的意思、`打磨`那些虽然无声地存在于纸面上、但是使人振聋发聩的格言警句。
+
+整本书翻译的过程，也是我们业余译者不断学习和锻炼的过程。因此，如果翻译周期过长，必然会在不经意间导致前后风格不一致、术语有差别的问题。AI翻译可以提前设置好风格和术语，让读者的阅读更加流畅。
+
+本人的所有译文，均经过 `AI 制作初稿`和`本人精细打磨`两道工序。如有纰漏，本人承担最终责任。书稿的整理、排版，书籍封面设计、电子书制作等工作均由我一人完成，错漏在所难免，还请谅解。
+
