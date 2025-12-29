@@ -196,7 +196,7 @@ form {
 :root {
   --accent: #e86507;       /* 深金橙 */
   --accent-light: #db953b; /* 亮金橙 */
-  --text-selection: #f0e4c2; /* 选中后的文字颜色 */
+  --text-selection: #fffbee; /* 选中后的文字颜色 */
 }
 
 /* === 2. 链接样式：点睛之笔 === */
