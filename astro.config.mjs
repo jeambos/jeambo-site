@@ -1,16 +1,14 @@
-// astro.config.mjs
-import { defineConfig } from 'astro/config';
-import wikiLinkPlugin from 'remark-wiki-link';
+import sitemap from "@astrojs/sitemap";
+import { defineConfig } from "astro/config";
+import { SITE_URL } from "./src/consts";
 
+// https://astro.build/config
 export default defineConfig({
+  site: SITE_URL,
   markdown: {
-    remarkPlugins: [
-      [wikiLinkPlugin, { 
-        // 这里定义 [[链接]] 点击后跳转的路径前缀
-        // 比如 [[autonomy]] 会变成 /garden/autonomy
-        hrefTemplate: (permalink) => `/garden/${permalink}`,
-        pageResolver: (name) => [name], 
-      }],
-    ],
+    shikiConfig: {
+      theme: "github-dark-default",
+    },
   },
+  integrations: [sitemap()],
 });
