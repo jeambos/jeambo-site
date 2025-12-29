@@ -1,0 +1,103 @@
+/* src/styles/global.css */
+
+:root {
+  /* === 亮色模式 (Warm Paper) === */
+  --bg-body: #faf9f6;       /* 暖白纸张 */
+  --bg-card: #ffffff;       /* 卡片背景 */
+  --text-main: #2c2c2c;     /* 深墨色 */
+  --text-muted: #737373;    /* 辅助灰 */
+  --border-color: #e5e5e5;  /* 边框 */
+  --accent: #d97706;        /* 深金橙 (用于文字/边框) */
+  --accent-bg: #fbbf24;     /* 亮金橙 (用于进度条/按钮) */
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
+  /* === 暗色模式 (Deep Ink) === */
+  --bg-body: #1c1917;       /* 深暖灰 */
+  --bg-card: #292524;       /* 深卡片 */
+  --text-main: #e7e5e4;     /* 暖灰白 */
+  --text-muted: #a8a29e;    /* 辅助灰 */
+  --border-color: #44403c;  /* 边框 */
+  --accent: #fbbf24;        /* 亮金橙 */
+  --accent-bg: #d97706;     /* 深金橙 */
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+/* === 全局重置 === */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  font-family: "Noto Serif SC", "Songti SC", serif; /* 衬线体主导 */
+  line-height: 1.7;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* === 工具类 === */
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+/* 链接样式 */
+a { color: inherit; text-decoration: none; transition: 0.2s; }
+a:hover { color: var(--accent); }
+
+/* 标题样式 (Bio, Works, etc.) */
+h2 {
+  font-family: system-ui, sans-serif; /* 标题用无衬线，形成对比 */
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* === 组件样式 === */
+/* Header */
+.header-img {
+  height: 80px; 
+  opacity: 0.9;
+  /* 暗黑模式下反转滤镜，让黑色签名变白 */
+  filter: none; 
+}
+[data-theme="dark"] .header-img { filter: invert(1) opacity(0.8); }
+
+/* Theme Toggle */
+.theme-toggle {
+  position: absolute; top: 2rem; right: 2rem;
+  background: none; border: none; cursor: pointer;
+  padding: 8px; border-radius: 50%; opacity: 0.6;
+}
+.theme-toggle:hover { opacity: 1; background: var(--bg-card); }
+.theme-icon { width: 24px; height: 24px; display: block; }
+
+/* Scrollbar Hide */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Progress Bar */
+.progress-track {
+  width: 100%; height: 6px;
+  background-color: var(--border-color);
+  border-radius: 10px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background-color: var(--accent-bg);
+  border-radius: 10px; transition: width 1s ease;
+}
+
+/* Garden Item */
+.garden-item {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+.garden-item:hover { border-bottom-style: solid; border-color: var(--accent); }
+.garden-icon { width: 18px; height: 18px; opacity: 0.8; }
+/* 暗黑模式下图标微调 */
+[data-theme="dark"] .garden-icon { filter: invert(0.1); }
