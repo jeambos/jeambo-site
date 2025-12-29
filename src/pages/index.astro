@@ -1,32 +1,84 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // 引入类型
+import type { CollectionEntry } from 'astro:content';
 import '../styles/global.css';
 
-// 书籍类型定义
-interface Book { title: string; cover: string; status: string; link?: string; }
+// === 1. 类型定义 ===
+interface ProjectMeta {
+  title: string;
+  cover: string;
+  link?: string; // 设为可选
+}
 
-// 1. 获取花园数据 (显式指定类型)
-const allPosts: CollectionEntry<'garden'>[] = await getCollection('garden');
+interface ProjectStatus extends ProjectMeta {
+  total: number;
+  done: number;
+  percentage: number;
+  lastLog: string; 
+  statusCategory: 'in-progress' | 'completed' | 'planned';
+}
 
-// 修复报错：给 a 和 b 指定类型
+// === 2. 获取花园文章 ===
+const allPosts = await getCollection('garden');
 const gardenPosts = allPosts.sort((a: CollectionEntry<'garden'>, b: CollectionEntry<'garden'>) => {
   return b.data.date.valueOf() - a.data.date.valueOf();
 });
 
-// 2. 获取进度数据
+// === 3. 解析工作日志 ===
 const progressEntry = await getEntry('specialized', 'progress');
-if (!progressEntry) { throw new Error("Missing src/content/specialized/progress.md"); }
-const books = progressEntry.data.books as Book[]; 
-const rawContent = progressEntry.body; 
+if (!progressEntry) throw new Error("Missing progress.md");
 
-// 进度计算
-const totalTasks = (rawContent.match(/- \[[x ]\]/g) || []).length;
-const doneTasks = (rawContent.match(/- \[x\]/g) || []).length;
-const percentage = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
-const currentTask = rawContent.match(/- \[ \] (.*)/)?.[1] || "Finalizing...";
+const metaList = progressEntry.data.projects_meta as ProjectMeta[];
+const rawBody = progressEntry.body;
 
-// 图标辅助
+function parseProjects(body: string, metas: ProjectMeta[]): ProjectStatus[] {
+  const sections = body.split(/^## /m).slice(1);
+  const results: ProjectStatus[] = [];
+
+  sections.forEach(section => {
+    const lines = section.trim().split('\n');
+    const title = lines[0].trim();
+    const meta = metas.find(m => m.title === title);
+    if (!meta) return; 
+
+    // 统计
+    const total = (section.match(/- \[[x ]\]/g) || []).length;
+    const done = (section.match(/- \[x\]/g) || []).length;
+    const percentage = total > 0 ? Math.round((done / total) * 100) : 0;
+
+    // 获取最后一个 Log
+    const completedItems = section.match(/- \[x\] (.*)/g);
+    let lastLog = "Waiting to start..."; 
+    
+    if (completedItems && completedItems.length > 0) {
+      const lastItemRaw = completedItems[completedItems.length - 1];
+      lastLog = lastItemRaw.replace(/- \[x\] /, '');
+    } else if (total > 0 && done === 0) {
+      lastLog = "Starting soon..."; 
+    }
+
+    // 状态判定
+    let cat: 'in-progress' | 'completed' | 'planned' = 'in-progress';
+    if (total === 0) cat = 'planned';
+    else if (done === total && total > 0) cat = 'completed';
+    else if (done === 0) cat = 'planned';
+    else cat = 'in-progress';
+
+    results.push({ ...meta, total, done, percentage, lastLog, statusCategory: cat });
+  });
+
+  return results;
+}
+
+const allProjects = parseProjects(rawBody, metaList);
+
+// 排序
+const displayList = [
+  ...allProjects.filter(p => p.statusCategory === 'in-progress'),
+  ...allProjects.filter(p => p.statusCategory === 'completed'),
+  ...allProjects.filter(p => p.statusCategory === 'planned')
+];
+
 function getStatusIcon(status: string): string {
   switch(status) {
     case 'evergreen': return '/icons/evergreen.svg';
@@ -46,12 +98,12 @@ function getStatusIcon(status: string): string {
   <body>
     <main class="container">
       
-      <header style="margin-bottom: 6rem; text-align: center;">
-        <img src="/header.svg" alt="Jeambo" style="height: 100px; opacity: 0.9;" />
+      <header style="margin-bottom: 8rem; margin-top: 4rem; text-align: center;">
+        <img src="/header.svg" alt="Jeambo" style="height: 120px; opacity: 0.9; margin: 0 auto;" />
       </header>
 
-      <section style="margin-bottom: 5rem;">
-        <p style="font-size: 1.2rem; color: var(--text-main);">
+      <section style="margin-bottom: 6rem;">
+        <p style="font-size: 1.3rem; color: var(--text-main);">
           我是 Jeambo。非单偶制关系实践者，译者。<br>
           创建了中文多元关系文库 <a href="https://polycn.org" target="_blank" style="border-bottom: 1px solid var(--accent);">PolyCN.org</a>。<br>
           在秩序与混沌之间，寻找爱的更多可能。
@@ -60,55 +112,78 @@ function getStatusIcon(status: string): string {
 
       <hr class="divider" />
 
-      <section style="margin-bottom: 5rem;">
-        <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">TRANSLATIONS</h2>
-        
-        <div class="scrollbar-hide" style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem;">
-          {books.filter((b: Book) => b.status === 'completed').map((book: Book) => (
-            <a href={book.link} target="_blank" style="flex: 0 0 120px; display: block;">
-              <div style="width: 120px; height: 180px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1rem;">
-                <img src={book.cover} alt={book.title} style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%); transition: 0.3s;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(20%)'"/>
+      <section style="margin-bottom: 6rem;">
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">TRANSLATIONS</h2>
+        <div class="scrollbar-custom" style="display: flex; gap: 2.5rem; padding-bottom: 1.5rem;">
+          {displayList.filter(b => b.statusCategory === 'completed').map(book => (
+            <a href={book.link || '#'} target={book.link ? "_blank" : "_self"} style="flex: 0 0 140px; display: block; cursor: pointer;">
+              <div style="width: 140px; height: 210px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 1rem;">
+                <img src={book.cover} alt={book.title} style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(10%); transition: 0.3s;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(10%)'"/>
               </div>
-              <p class="font-ui" style="font-size: 0.85rem; font-weight: 500;">{book.title}</p>
+              <p class="font-ui" style="font-size: 0.9rem; font-weight: 600;">{book.title}</p>
             </a>
           ))}
         </div>
       </section>
 
-      <section style="margin-bottom: 5rem;">
-        <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
-          <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin: 0;">CURRENT FOCUS</h2>
-          <span class="font-ui" style="font-size: 3rem; font-weight: 300; line-height: 1; color: var(--accent);">{percentage}%</span>
-        </div>
+      <section style="margin-bottom: 6rem;">
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">WORK LOG</h2>
         
-        <div style="margin-bottom: 0.5rem;">
-          <span style="font-size: 1.1rem; font-style: italic;">More Than Two</span>
-        </div>
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          {displayList.map((book) => (
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.3rem;">
+                <div style="display: flex; align-items: baseline; gap: 0.8rem;">
+                  {book.link && book.link !== '#' ? (
+                    <a href={book.link} target="_blank" style="font-size: 1.2rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='inherit'">
+                      {book.title}
+                    </a>
+                  ) : (
+                    <span style="font-size: 1.2rem; font-weight: 500;">{book.title}</span>
+                  )}
 
-        <div class="progress-track">
-          <div class="progress-fill" style={`width: ${percentage}%;`}></div>
-        </div>
-        
-        <div class="font-ui" style="margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted);">
-          Processing: {currentTask}
+                  {book.statusCategory !== 'planned' && (
+                    <span class="font-ui" style="color: var(--accent); font-weight: bold;">{book.percentage}%</span>
+                  )}
+                  
+                  {book.statusCategory === 'completed' && (
+                    <img src="/icons/check.svg" alt="Completed" style="width: 16px; height: 16px; opacity: 0.6; transform: translateY(2px);" />
+                  )}
+                </div>
+              </div>
+
+              <div class="progress-track" style="margin-bottom: 0.4rem;">
+                <div class="progress-fill" style={`
+                  width: ${book.percentage}%; 
+                  background-size: ${book.percentage > 0 ? (10000 / book.percentage) : 100}% 100%;
+                `}></div>
+              </div>
+
+              {book.statusCategory !== 'planned' && (
+                <div class="font-ui" style="font-size: 0.85rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: center;">
+                  <span style="width: 4px; height: 4px; background-color: var(--line-color); border-radius: 50%; flex-shrink: 0;"></span>
+                  <span set:html={
+                    book.lastLog.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="text-decoration: underline;">$1</a>')
+                  }></span>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
       <hr class="divider" />
 
       <section>
-        <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">DIGITAL GARDEN</h2>
-        
+        <h2 class="font-ui" style="font-size: 0.8rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">DIGITAL GARDEN</h2>
         <div style="display: flex; flex-direction: column; gap: 1.5rem;">
           {gardenPosts.map((post: CollectionEntry<'garden'>) => (
             <a href={`/garden/${post.slug}`} style="display: flex; align-items: baseline; group">
-              <img src={getStatusIcon(post.data.status)} style="width: 16px; height: 16px; opacity: 0.6; margin-right: 1rem; transform: translateY(2px);" />
-              
-              <span style="font-size: 1.1rem; border-bottom: 1px dashed var(--line-color); padding-bottom: 2px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-color)'">
+              <img src={getStatusIcon(post.data.status)} style="width: 18px; height: 18px; opacity: 0.7; margin-right: 1.2rem; transform: translateY(3px);" />
+              <span style="font-size: 1.2rem; border-bottom: 1px dashed var(--line-color); padding-bottom: 2px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-color)'">
                 {post.data.title}
               </span>
-              
-              <span class="font-ui" style="margin-left: auto; font-size: 0.8rem; color: var(--text-muted);">
+              <span class="font-ui" style="margin-left: auto; font-size: 0.85rem; color: var(--text-muted);">
                 {post.data.date.toISOString().split('T')[0]}
               </span>
             </a>
@@ -116,7 +191,7 @@ function getStatusIcon(status: string): string {
         </div>
       </section>
 
-      <footer class="font-ui" style="margin-top: 6rem; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
+      <footer class="font-ui" style="margin-top: 8rem; text-align: center; font-size: 0.8rem; color: var(--text-muted);">
         <p>CC BY-NC-SA 4.0 © 2025 Jeambo</p>
         <p style="margin-top: 0.5rem;"><a href="mailto:jeambo@polycn.org">jeambo@polycn.org</a></p>
       </footer>
