@@ -1,49 +1,36 @@
 ---
-// src/pages/index.astro
 import { getCollection, getEntry } from 'astro:content';
-import type { CollectionEntry } from 'astro:content'; // 引入类型定义
+import type { CollectionEntry } from 'astro:content'; // 引入类型
 import '../styles/global.css';
 
-// --- 1. 定义类型接口 (让 TS 不再报错) ---
-interface Book {
-  title: string;
-  cover: string;
-  status: string;
-  link?: string;
-}
+// 书籍类型定义
+interface Book { title: string; cover: string; status: string; link?: string; }
 
-// --- 2. 获取花园文章 ---
+// 1. 获取花园数据 (显式指定类型)
 const allPosts: CollectionEntry<'garden'>[] = await getCollection('garden');
-const gardenPosts = allPosts.sort((a, b) => {
-    // 确保 date 存在再比较
-    return b.data.date.valueOf() - a.data.date.valueOf();
+
+// 修复报错：给 a 和 b 指定类型
+const gardenPosts = allPosts.sort((a: CollectionEntry<'garden'>, b: CollectionEntry<'garden'>) => {
+  return b.data.date.valueOf() - a.data.date.valueOf();
 });
 
-// --- 3. 获取进度数据 ---
+// 2. 获取进度数据
 const progressEntry = await getEntry('specialized', 'progress');
-if (!progressEntry) {
-  throw new Error("请确保 src/content/specialized/progress.md 存在");
-}
-
-// 强制告诉 TS 这里的 data 符合我们定义的结构
+if (!progressEntry) { throw new Error("Missing src/content/specialized/progress.md"); }
 const books = progressEntry.data.books as Book[]; 
 const rawContent = progressEntry.body; 
 
-// 计算 Checklist 进度
+// 进度计算
 const totalTasks = (rawContent.match(/- \[[x ]\]/g) || []).length;
 const doneTasks = (rawContent.match(/- \[x\]/g) || []).length;
 const percentage = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+const currentTask = rawContent.match(/- \[ \] (.*)/)?.[1] || "Finalizing...";
 
-// 获取当前正在进行的任务名称
-const currentTaskMatch = rawContent.match(/- \[ \] (.*)/);
-const currentTaskName = currentTaskMatch ? currentTaskMatch[1] : "Finalizing...";
-
-// --- 4. 辅助函数 (加上类型注解) ---
+// 图标辅助
 function getStatusIcon(status: string): string {
   switch(status) {
     case 'evergreen': return '/icons/evergreen.svg';
     case 'budding': return '/icons/budding.svg';
-    case 'seed': return '/icons/seed.svg';
     default: return '/icons/seed.svg';
   }
 }
@@ -54,144 +41,85 @@ function getStatusIcon(status: string): string {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Jeambo</title>
-    <script is:inline>
-      const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
-        }
-        return 'light';
-      })();
-      if (theme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-    </script>
   </head>
   
   <body>
     <main class="container">
       
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Dark Mode">
-        <img id="theme-icon-sun" src="/icons/sun.svg" class="theme-icon" style="display: none;" />
-        <img id="theme-icon-moon" src="/icons/moon.svg" class="theme-icon" />
-      </button>
-
-      <header style="margin-bottom: 3rem;">
-        <img src="/header.svg" alt="Jeambo Signature" class="header-img" />
+      <header style="margin-bottom: 6rem; text-align: center;">
+        <img src="/header.svg" alt="Jeambo" style="height: 100px; opacity: 0.9;" />
       </header>
 
-      <section>
-        <h2>ABOUT</h2>
-        <div style="font-size: 1.1rem; opacity: 0.9;">
-          <p>
-            我是 Jeambo。非单偶制关系实践者，译者。
-            <br>
-            创建了中文多元关系文库 <a href="https://polycn.org" target="_blank" style="text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 4px;">PolyCN.org</a>。
-            <br>
-            在秩序与混沌之间，寻找爱的更多可能。
-          </p>
-        </div>
+      <section style="margin-bottom: 5rem;">
+        <p style="font-size: 1.2rem; color: var(--text-main);">
+          我是 Jeambo。非单偶制关系实践者，译者。<br>
+          创建了中文多元关系文库 <a href="https://polycn.org" target="_blank" style="border-bottom: 1px solid var(--accent);">PolyCN.org</a>。<br>
+          在秩序与混沌之间，寻找爱的更多可能。
+        </p>
       </section>
 
-      <section>
-        <h2>TRANSLATIONS</h2>
-        <div class="scrollbar-hide" style="display: flex; gap: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem; margin: 0 -1.5rem; padding: 0 1.5rem;">
-          {books.filter(b => b.status === 'completed').map(book => (
-            <a href={book.link} target="_blank" style="flex: 0 0 100px; display: block; group">
-              <div style="width: 100px; height: 150px; border-radius: 4px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 0.5rem;">
-                <img src={book.cover} alt={book.title} style="width: 100%; height: 100%; object-fit: cover;" />
+      <hr class="divider" />
+
+      <section style="margin-bottom: 5rem;">
+        <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">TRANSLATIONS</h2>
+        
+        <div class="scrollbar-hide" style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem;">
+          {books.filter((b: Book) => b.status === 'completed').map((book: Book) => (
+            <a href={book.link} target="_blank" style="flex: 0 0 120px; display: block;">
+              <div style="width: 120px; height: 180px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1rem;">
+                <img src={book.cover} alt={book.title} style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%); transition: 0.3s;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(20%)'"/>
               </div>
-              <p style="font-size: 0.8rem; font-weight: bold; line-height: 1.2;">{book.title}</p>
+              <p class="font-ui" style="font-size: 0.85rem; font-weight: 500;">{book.title}</p>
             </a>
           ))}
         </div>
       </section>
 
-      <section>
-        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-          <h2>CURRENT FOCUS</h2>
-          <span style="font-family: monospace; color: var(--accent);">{percentage}%</span>
+      <section style="margin-bottom: 5rem;">
+        <div style="display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem;">
+          <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin: 0;">CURRENT FOCUS</h2>
+          <span class="font-ui" style="font-size: 3rem; font-weight: 300; line-height: 1; color: var(--accent);">{percentage}%</span>
         </div>
         
-        <div style="background: var(--bg-card); padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-            <span style="font-weight: bold;">More Than Two</span>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">
-              {doneTasks}/{totalTasks} Chapters
-            </span>
-          </div>
-          
-          <div class="progress-track">
-            <div class="progress-fill" style={`width: ${percentage}%;`}></div>
-          </div>
-          
-          <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-            <ul style="list-style: none;">
-              <li style="display: flex; gap: 0.5rem; align-items: center;">
-                <span style="width: 6px; height: 6px; background: var(--accent); border-radius: 50%;"></span>
-                Translating: {rawContent.match(/- \[ \] (.*)/)?.[1] || "Finalizing..."}
-              </li>
-            </ul>
-          </div>
+        <div style="margin-bottom: 0.5rem;">
+          <span style="font-size: 1.1rem; font-style: italic;">More Than Two</span>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill" style={`width: ${percentage}%;`}></div>
+        </div>
+        
+        <div class="font-ui" style="margin-top: 0.8rem; font-size: 0.8rem; color: var(--text-muted);">
+          Processing: {currentTask}
         </div>
       </section>
 
+      <hr class="divider" />
+
       <section>
-        <h2>DIGITAL GARDEN</h2>
-        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          {gardenPosts.map(post => (
-            <a href={`/garden/${post.slug}`} class="garden-item">
-              <img src={getStatusIcon(post.data.status)} class="garden-icon" alt={post.data.status} />
+        <h2 class="font-ui" style="font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 2rem;">DIGITAL GARDEN</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          {gardenPosts.map((post: CollectionEntry<'garden'>) => (
+            <a href={`/garden/${post.slug}`} style="display: flex; align-items: baseline; group">
+              <img src={getStatusIcon(post.data.status)} style="width: 16px; height: 16px; opacity: 0.6; margin-right: 1rem; transform: translateY(2px);" />
               
-              <span style="flex-grow: 1; font-weight: 500;">{post.data.title}</span>
+              <span style="font-size: 1.1rem; border-bottom: 1px dashed var(--line-color); padding-bottom: 2px; transition: border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--line-color)'">
+                {post.data.title}
+              </span>
               
-              <span style="font-family: monospace; font-size: 0.8rem; color: var(--text-muted);">
+              <span class="font-ui" style="margin-left: auto; font-size: 0.8rem; color: var(--text-muted);">
                 {post.data.date.toISOString().split('T')[0]}
               </span>
             </a>
           ))}
-          {gardenPosts.length === 0 && <p style="color: var(--text-muted); font-style: italic;">花园正在播种...</p>}
         </div>
       </section>
 
-      <footer style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; font-size: 0.8rem; color: var(--text-muted);">
+      <footer class="font-ui" style="margin-top: 6rem; text-align: center; font-size: 0.75rem; color: var(--text-muted);">
         <p>CC BY-NC-SA 4.0 © 2025 Jeambo</p>
-        <p style="margin-top: 0.5rem;">
-          <a href="mailto:jeambo@polycn.org">jeambo@polycn.org</a>
-        </p>
+        <p style="margin-top: 0.5rem;"><a href="mailto:jeambo@polycn.org">jeambo@polycn.org</a></p>
       </footer>
-
     </main>
-
-    <script is:inline>
-      const toggleBtn = document.getElementById('theme-toggle');
-      const sunIcon = document.getElementById('theme-icon-sun');
-      const moonIcon = document.getElementById('theme-icon-moon');
-      const html = document.documentElement;
-
-      function updateIcon(isDark) {
-        if (isDark) {
-          sunIcon.style.display = 'block';
-          moonIcon.style.display = 'none';
-        } else {
-          sunIcon.style.display = 'none';
-          moonIcon.style.display = 'block';
-        }
-      }
-
-      // Initialize icon
-      updateIcon(html.getAttribute('data-theme') === 'dark');
-
-      toggleBtn.addEventListener('click', () => {
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateIcon(newTheme === 'dark');
-      });
-    </script>
   </body>
 </html>
