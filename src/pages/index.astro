@@ -10,7 +10,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import { getCollection } from 'astro:content';
 
 // 引入 Markdown 组件
-import Intro from '../components/Intro.md';
+import intro from '../components/intro.md';
 
 // 获取博客文章并排序
 const posts = (await getCollection('blog')).sort(
@@ -27,7 +27,7 @@ const posts = (await getCollection('blog')).sort(
     <Header><Nav /></Header>
     <main>
             <article>
-                <Intro />
+                <intro />
             </article>
 
             <hr class="divider" />
