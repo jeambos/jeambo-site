@@ -11,10 +11,10 @@ Source: https: //github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd
   --background-color: #fff;
   --heading-color: #222;
   --text-color: #444;
-  --link-color: #3273dc;
-  --visited-color: #8b6fcb;
-  --code-background-color: #f2f2f2;
-  --code-color: #222;
+  --link-color: #ec7e00;
+  --visited-color: #a34a0b;
+  --code-background-color: #f2edde;
+  --code-color: #b85d02;;
   --blockquote-color: #222;
 }
 
@@ -23,9 +23,9 @@ Source: https: //github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd
     --background-color: #01242e;
     --heading-color: #eee;
     --text-color: #ddd;
-    --link-color: #8cc2dd;
-    --visited-color: #8b6fcb;
-    --code-background-color: #0d1117;
+    --link-color: #bb6402;
+    --visited-color: #c65d12;
+    --code-background-color: #401603;
     --code-color: #ddd;
     --blockquote-color: #ccc;
   }
@@ -109,10 +109,9 @@ pre {
 }
 
 blockquote {
-  border-left: 1px solid #999;
+  border-left: 4px solid var(--accent); /* 橙色竖线 */
   color: var(--code-color);
   padding-left: 20px;
-  font-style: italic;
 }
 
 footer {
@@ -147,6 +146,10 @@ time {
   margin-block-start: 1em;
   margin-block-end: 1em;
   overflow-x: auto;
+}
+
+code {
+  font-size: 1rem !important;
 }
 
 /* blog post list */
@@ -187,4 +190,64 @@ ul.blog-posts li a:visited {
 /* search */
 form {
   line-height: 1;
+}
+
+/* === 1. 品牌色定义 (Warm & Orange) === */
+:root {
+  --accent: #e86507;       /* 深金橙 */
+  --accent-light: #db953b; /* 亮金橙 */
+  --text-selection: #f0e4c2; /* 选中后的文字颜色 */
+}
+
+/* === 2. 链接样式：点睛之笔 === */
+
+
+/* === 3. 选中文本高亮 (Selection) === */
+/* 这个细节会让网站瞬间变得很高级 */
+::selection {
+  background-color: var(--accent);
+  color: var(--text-selection);
+}
+
+/* === 4. 引用块 (Blockquote) === */
+/* 让引用看起来像书里的批注 */
+blockquote {
+  border-left: 4px solid var(--accent); /* 橙色竖线 */
+  margin-left: 0;
+  padding-left: 1rem;
+  opacity: 0.8;
+  background: transparent; /* 保持极简，不要背景色 */
+}
+
+/* === 5. 极细滚动条 (可选) === */
+/* 仅针对 Webkit (Chrome/Safari) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* src/styles/global.css */
+
+/* 针对所有非代码块内的 code (即行内代码) */
+:not(pre) > code {
+  /* 1. 字号跟随正文 */
+  font-size: 1em;
+  
+  /* 2. (可选) 如果你不想用机器感的等宽字体，取消下面这行的注释 */
+  /* font-family: inherit; */
+
+  /* 3. 增加强调感：加一个淡淡的背景色 */
+  background-color: rgba(217, 119, 6, 0.15); /* 使用你的品牌橙色的 15% 透明度 */
+  
+  /* 4. 细节优化 */
+  padding: 0.15em 0.3em; /* 左右稍微留点空隙，不拥挤 */
+  border-radius: 4px;   /* 圆角，更现代 */
+  color: var(--accent); /* 让文字变橙色，或者保持 inherit 黑色 */
+  vertical-align: middle; /* 修正对齐 */
 }

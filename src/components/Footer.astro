@@ -1,5 +1,40 @@
+---
+const today = new Date();
+---
+
 <footer>
-  Designed by <a href="https://bearblog.dev">Bear ʕ•ᴥ•ʔ</a> | Migrated by <a
-    href="https://harleyjwilson.com/">Harley Wilson</a
-  >
+  <div class="copyright">
+    &copy; {today.getFullYear()} Jeambo
+    <span class="separator">/</span>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
+      CC BY-NC-SA 4.0
+    </a>
+  </div>
+
+  <div class="links">
+    <a href="mailto:jeambo@polycn.org">jeambo@polycn.org</a>
+    <span class="separator">•</span>
+    <a href="https://polycn.org" target="_blank">PolyCN.org</a>
+  </div>
+
+    <div class="ref">
+    Built with <a href="https://astro.build/" target="_blank">Astro</a> <a href="https://github.com/harleyjwilson/astro-bear-blog" target="_blank">Bear Blog ʕ•ᴥ•ʔ Theme</a>
+  </div>
+
+  <style>
+    footer {
+      padding: 2rem 0 4rem 0;
+      text-align: center;
+      font-size: 0.8rem; /* 稍微比正文小一点，显得精致 */
+      opacity: 1;       /* 降低对比度，不抢正文风头 */
+      line-height: 1.8;
+    }
+    
+    .separator {
+      margin: 0 0.3rem;
+      opacity: 1;
+    }
+
+
+  </style>
 </footer>
