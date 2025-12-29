@@ -101,7 +101,7 @@ pre {
 }
 
 *:not(pre)>code {
-  font-family: monospace;
+  font-family: monospace, Consolas, 'Courier New', monospace;
   padding: 2px;
   background-color: var(--code-background-color);
   color: var(--code-color);
@@ -241,7 +241,7 @@ blockquote {
   
   /* 2. (可选) 如果你不想用机器感的等宽字体，取消下面这行的注释 */
   /* font-family: inherit; */
-
+  
   /* 3. 增加强调感：加一个淡淡的背景色 */
   background-color: rgba(217, 119, 6, 0.15); /* 使用你的品牌橙色的 15% 透明度 */
   
