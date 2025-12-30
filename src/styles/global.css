@@ -101,7 +101,15 @@ pre {
 }
 
 *:not(pre)>code {
-  font-family: monospace, Consolas, 'Courier New', monospace;
+  font-family: 
+    /* 1. 第一优先级：英文等宽字体 (Mac/Win/Linux 常见) */
+    "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", 
+    
+    /* 2. 关键一步：在 generic monospace 之前，强制指定中文黑体 */
+    "PingFang SC", "Microsoft YaHei", "Source Han Sans SC",
+    
+    /* 3. 最后保底 */
+    monospace;
   padding: 2px;
   background-color: var(--code-background-color);
   color: var(--code-color);
@@ -241,7 +249,7 @@ blockquote {
   
   /* 2. (可选) 如果你不想用机器感的等宽字体，取消下面这行的注释 */
   /* font-family: inherit; */
-  
+
   /* 3. 增加强调感：加一个淡淡的背景色 */
   background-color: rgba(217, 119, 6, 0.15); /* 使用你的品牌橙色的 15% 透明度 */
   
