@@ -1,5 +1,4 @@
 ---
-const today = new Date();
 ---
 
 <footer>
@@ -8,7 +7,7 @@ const today = new Date();
   </div>
   
   <div class="copyright">
-    &copy; {today.getFullYear()} Jeambo
+    &copy; <span id="copyright-year">2026</span> Jeambo
     <span class="separator">/</span>
     <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">
       CC BY-NC-SA 4.0
@@ -41,4 +40,13 @@ const today = new Date();
 
 
   </style>
+
+  <script>
+  const yearElem = document.getElementById('copyright-year');
+  if (yearElem) {
+    yearElem.textContent = new Date().getFullYear().toString();
+  }
+</script>
+
+
 </footer>
