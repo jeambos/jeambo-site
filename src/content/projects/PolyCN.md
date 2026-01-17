@@ -1,6 +1,6 @@
 ---
 title: "PolyCN 中文多元关系文库"
-description: "基于 Astro 构建的中文非单偶制知识库，包含自我测评、图书阅读与下载、专题文章、真人故事、wiki等栏目。"
+description: "基于 Astro 构建的中文非单偶制知识库，包含图书阅读与下载、专题文章、真人故事、自我测评、wiki等栏目。"
 year: "2025"
 url: "https://polycn.org"
 icon: "mdi:web" 
