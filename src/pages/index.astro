@@ -36,7 +36,7 @@ const notes = (await getCollection('notes'))
   <hr />
 
   <section class="section-block">
-    <h3 class="section-title">项目 / Projects</h3>
+    <h2 class="section-title">项目 / Projects</h2>
     <div class="grid-layout project-grid">
       {projects.map((project) => (
         <ProjectCard project={project} />
@@ -48,7 +48,7 @@ const notes = (await getCollection('notes'))
   </section>
 
   <section class="section-block">
-    <h3 class="section-title">最近写作 / Recent Writings</h3>
+    <h2 class="section-title">最近写作 / Recent Writings</h2>
     <ul class="collection-list">
       {posts.map((post) => (
         <li>
@@ -65,7 +65,7 @@ const notes = (await getCollection('notes'))
   </section>
 
   <section class="section-block">
-    <h3 class="section-title">笔记与思考 / Notes</h3>
+    <h2 class="section-title">笔记与思考 / Notes</h2>
     <div class="grid-layout note-grid">
       {notes.map((note) => (
         <a href={`/notes/${note.slug}/`} class="card note-card">
