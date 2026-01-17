@@ -1,17 +1,30 @@
 ---
-// 1. 引入刚才写好的底座
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-// 2. 引入组件和常量
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import FormattedDate from '../components/FormattedDate.astro';
 import Intro from '../components/intro.md';
-
-// 3. 数据获取逻辑（保持不变）
 import { getCollection } from 'astro:content';
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+import ProjectCard from '../components/ProjectCard.astro'; // 引入组件
+
+// === 1. Projects ===
+const projects = (await getCollection('projects')).sort((a, b) => 
+  (b.data.year || "").localeCompare(a.data.year || "")
 );
+
+// === 2. Blog (最近 5 篇) ===
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+
+// === 3. Notes (最近 8 条) ===
+// 逻辑更新：使用 lastUpdated 排序
+const notes = (await getCollection('notes'))
+  .sort((a, b) => {
+    const dateA = a.data.lastUpdated || a.data.pubDate;
+    const dateB = b.data.lastUpdated || b.data.pubDate;
+    return dateB.valueOf() - dateA.valueOf();
+  })
+  .slice(0, 8);
 ---
 
 <BaseLayout title="Home" description={SITE_DESCRIPTION}>
@@ -20,23 +33,140 @@ const posts = (await getCollection('blog')).sort(
     <Intro />
   </article>
 
-  <hr class="dIivider" />
+  <hr />
 
-  <section>
-    <ul>
-      {
-        posts.map((post) => (
-          <li>
-            <a href={`/blog/${post.slug}/`}>
-              {post.data.title}
-            </a>
-            <span class="date">
-              <FormattedDate date={post.data.pubDate} />
-            </span>
-          </li>
-        ))
-      }
+  <section class="section-block">
+    <h3 class="section-title">Projects</h3>
+    <div class="grid-layout project-grid">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+    <div class="view-all">
+      <a href="/projects">View all projects →</a>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h3 class="section-title">Recent Writings</h3>
+    <ul class="collection-list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+          <span class="meta">
+            <FormattedDate date={post.data.pubDate} />
+          </span>
+        </li>
+      ))}
     </ul>
+    <div class="view-all">
+      <a href="/blog">View all posts →</a>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <h3 class="section-title">Notes & Til</h3>
+    <div class="grid-layout note-grid">
+      {notes.map((note) => (
+        <a href={`/notes/${note.slug}/`} class="card note-card">
+          <span class="card-title">{note.data.title}</span>
+          <span class="meta">
+            {/* 显示最后更新时间 */}
+            {note.data.lastUpdated ? 'Upd: ' : ''}
+            <FormattedDate date={note.data.lastUpdated || note.data.pubDate} />
+          </span>
+        </a>
+      ))}
+    </div>
+    <div class="view-all">
+      <a href="/notes">View all notes →</a>
+    </div>
   </section>
 
 </BaseLayout>
+
+<style>
+  /* === 布局基础 === */
+  hr { margin: 3rem 0; }
+  .section-block { margin-bottom: 4rem; }
+  
+  /* 标题保持原始风格，不加额外粗细 */
+  .section-title { margin-bottom: 1.5rem; }
+  
+  /* 查看全部链接，靠右对齐 */
+  .view-all { margin-top: 1rem; text-align: right; font-size: 0.9rem; }
+
+  /* === Grid 通用布局 === */
+  .grid-layout {
+    display: grid;
+    gap: 1rem; /* 统一的间距 */
+  }
+
+  /* Projects: 桌面端双列 */
+  @media (min-width: 600px) {
+    .project-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Notes: 自动填充 (便利贴墙) */
+  .note-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  /* === Card 通用样式 (Brutalist Style) === */
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc; /* 统一的基础边框灰色 */
+    border-radius: 3px;     /* 统一的小圆角 */
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  /* 统一 Hover: 变为品牌链接色 */
+  .card:hover {
+    border-color: var(--link-color);
+  }
+
+  .card-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--heading-color);
+  }
+
+  /* === 两种卡片的差异化 (仅通过 Padding 和 元数据 区分) === */
+  
+  /* Projects: 更大，更透气 */
+  .project-card {
+    padding: 1.5rem;
+    height: 100%; 
+  }
+  .card-desc {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    line-height: 1.4;
+  }
+
+  /* Notes: 更紧凑 */
+  .note-card {
+    padding: 0.8rem;
+    min-height: 80px;
+    font-size: 0.9rem;
+  }
+
+  /* 元数据统一复用 global 的 meta 样式逻辑，这里只微调颜色 */
+  .meta {
+    font-size: 1rem;
+    color: #888;
+    font-family: monospace;
+    margin-top: auto; /* 确保沉底 */
+  }
+
+  /* 暗黑模式适配 */
+  @media (prefers-color-scheme: dark) {
+    .card { border-color: #444; }
+  }
+</style>

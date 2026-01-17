@@ -1,20 +1,64 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection("projects");
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: post,
-  }));
+	const posts = await getCollection('projects');
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
 }
-type Props = CollectionEntry<"projects">;
 
-const post = Astro.props;
-const { Content } = await post.render();
+type Props = CollectionEntry<'projects'>;
+
+const project = Astro.props;
+const { Content } = await project.render();
 ---
 
-<BaseLayout title={post.data.title}>
-  <Content />
+<BaseLayout title={project.data.title} description={project.data.description}>
+  
+  <article>
+    <h1 class="title">{project.data.title}</h1>
+    <hr />
+
+    <div class="project-link-area">
+        <ProjectCard 
+          project={project} 
+          useExternalLink={true} 
+          customTitle={`点此访问 ${project.data.title}`}
+          customDesc="点击访问（跳转新窗口）"
+          showExternalIcon={true}
+        />
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+
 </BaseLayout>
+
+<style>
+  .title {
+    font-size: 2em;
+    margin: 0.25em 0 0;
+  }
+  hr {
+    border-top: 1px dashed #ccc;
+    margin: 1rem 0;
+  }
+  
+  /* 限制一下卡片在文章里的宽度，不要太宽 */
+  .project-link-area {
+    margin: 2rem 0;
+    max-width: 400px; /* 或者 100% 随你喜欢 */
+  }
+  
+  /* 简单的正文样式，增加阅读体验 */
+  .prose {
+    margin-top: 2rem;
+    line-height: 1.8;
+  }
+</style>

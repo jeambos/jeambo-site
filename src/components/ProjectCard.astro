@@ -1,0 +1,111 @@
+---
+import type { CollectionEntry } from 'astro:content';
+// 1. 引入 Icon 组件
+import { Icon } from 'astro-icon/components';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  useExternalLink?: boolean;
+  // 👇 新增的可选参数
+  customTitle?: string;
+  customDesc?: string;
+  showExternalIcon?: boolean;
+}
+
+const { 
+  project, 
+  useExternalLink = false,
+  customTitle,
+  customDesc,
+  showExternalIcon = false
+} = Astro.props;
+
+const href = useExternalLink ? project.data.url : `/projects/${project.slug}/`;
+const target = useExternalLink ? '_blank' : '_self';
+
+// 优先使用传入的自定义内容，如果没有则回退到 project 原数据
+const displayTitle = customTitle || project.data.title;
+const displayDesc = customDesc || project.data.description;
+---
+
+<a href={href} target={target} class="card project-card group">
+  <div>
+    <h4 class="card-title">
+      {displayTitle}
+    </h4>
+    <p class="card-desc">{displayDesc}</p>
+  </div>
+  
+  {showExternalIcon ? (
+    // 🅰️ 变体模式：显示醒目的外链图标
+    // name="mdi:open-in-new" 是 Material Design 的图标，你可以换成你喜欢的
+    <Icon name="mdi:open-in-new" class="big-icon" />
+  ) : (
+    // 🅱️ 默认模式：显示年份
+    project.data.year && <span class="meta">[{project.data.year}]</span>
+  )}
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+    padding: 1.5rem;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative; /* 为图标定位做准备 */
+  }
+
+  .card:hover {
+    border-color: var(--link-color);
+  }
+
+  .card-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--heading-color);
+  }
+
+  .card-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    line-height: 1.5;
+  }
+
+  /* 年份样式 (保持不变) */
+  .meta {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-family: monospace;
+    color: #888;
+    align-self: flex-end; 
+  }
+
+  /* 👇 新增：大图标样式 */
+  .big-icon {
+    font-size: 2rem; /* 醒目的大尺寸 (32px) */
+    color: #ccc;     /* 默认灰色，很低调 */
+    align-self: flex-end; /* 放在右下角 */
+    margin-top: 1rem;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  /* 交互：当卡片(父元素)悬停时，图标变色 */
+  .card:hover .big-icon {
+    color: var(--link-color); /* 变成品牌色 */
+    transform: translate(2px, -2px); /* 稍微往右上角动一下，增加点击诱导感 */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card { border-color: #444; }
+    .big-icon { color: #555; } /* 暗黑模式下图标默认深一点 */
+  }
+</style>
