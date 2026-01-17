@@ -12,7 +12,7 @@ const sortedProjects = projects.sort((a, b) =>
 <BaseLayout title="我的作品">
   <h1>Projects</h1>
   
-  <ul class="collection-list">
+  <ul class="collection-list" style="--visited-color: var(--link-color);">
     {sortedProjects.map((project) => (
       <li>
         <a href={`/projects/${project.slug}/`}>{project.data.title}</a>
