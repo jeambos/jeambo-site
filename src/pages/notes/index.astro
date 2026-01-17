@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+const notes = await getCollection('notes');
+const sortedNotes = notes.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="我的笔记">
+  <h1>Notes</h1>
+  
+  <ul class="collection-list">
+    {sortedNotes.map((note) => (
+      <li>
+        <a href={`/notes/${note.slug}/`}>{note.data.title}</a>
+        
+        <span class="meta">
+          <FormattedDate date={note.data.pubDate} />
+        </span>
+
+        {/* 笔记通常不需要显示描述，如果不想要，下面这行可以删掉 */}
+        {note.data.description && <span class="desc">{note.data.description}</span>}
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

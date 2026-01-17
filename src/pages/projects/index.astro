@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const projects = await getCollection('projects');
+// 简单的容错排序
+const sortedProjects = projects.sort((a, b) => 
+  (b.data.year || "").localeCompare(a.data.year || "")
+);
+---
+
+<BaseLayout title="我的作品">
+  <h1>Projects</h1>
+  
+  <ul class="collection-list">
+    {sortedProjects.map((project) => (
+      <li>
+        <a href={`/projects/${project.slug}/`}>{project.data.title}</a>
+        
+        {project.data.year && <span class="meta">[{project.data.year}]</span>}
+        
+        <span class="desc">{project.data.description}</span>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
