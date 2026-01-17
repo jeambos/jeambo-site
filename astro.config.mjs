@@ -2,6 +2,8 @@ import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
 import { SITE_URL } from "./src/consts";
 
+import icon from "astro-icon";
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE_URL,
@@ -10,5 +12,5 @@ export default defineConfig({
       theme: "github-dark-default",
     },
   },
-  integrations: [sitemap()],
+  integrations: [sitemap(), icon()],
 });
