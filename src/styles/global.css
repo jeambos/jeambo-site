@@ -3,7 +3,7 @@ Source: https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6
 */
 
 /* =========================================
-   1. ROOT VARIABLES (主题变量定义)
+   1. ROOT VARIABLES (配色方案优化版)
    ========================================= */
 
 :root {
@@ -11,19 +11,33 @@ Source: https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6
   --font-main: Verdana, sans-serif;
   --font-secondary: Verdana, sans-serif;
   --font-scale: 1em;
+  
+  /* --- 基础背景与文字 --- */
   --background-color: #fff;
   --heading-color: #222;
   --text-color: #444;
-  --link-color: #ec7e00;
-  --visited-color: #a34a0b;
-  --code-background-color: #f2edde;
-  --code-color: #b85d02;
   --blockquote-color: #222;
   
-  /* 自定义品牌色 (Warm & Orange) */
-  --accent: #e86507;       /* 深金橙 */
-  --accent-light: #db953b; /* 亮金橙 */
-  --text-selection: #fffbee; /* 选中后的文字颜色 */
+  /* --- 核心链接颜色 (Light Mode) --- */
+  
+  /* 1. 常规链接：保持你喜欢的鲜艳金橙色 */
+  --link-color: #ec7e00; 
+  
+  /* 2. [新增] 粗体链接专用色：稍微深一点、暗一点，抵消粗体的视觉膨胀感 */
+  --link-bold-color: #cf6d00; 
+
+  /* 3. 已访问链接：改为“暖灰/陶土色” */
+  /* 以前的 #a34a0b 太红太深，显得脏 */
+  /* 现在的 #a88d75 是一种褪色的金褐色，像旧报纸上的字，很优雅 */
+  --visited-color: #cf6d00; 
+
+  /* --- 代码块 --- */
+  --code-background-color: #fcf9f2; /* 稍微调亮一点，更干净 */
+  --code-color: #b85d02;
+  
+  /* --- 品牌辅助色 --- */
+  --accent: #e86507; 
+  --text-selection: #fffbee;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -31,14 +45,19 @@ Source: https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6
     --background-color: #01242e;
     --heading-color: #eee;
     --text-color: #ddd;
-    --link-color: #bb6402;
-    --visited-color: #c65d12;
-    --code-background-color: #401603;
-    --code-color: #ddd;
     --blockquote-color: #ccc;
+    
+    /* Dark Mode 下的微调 */
+    --link-color: #d67a18; /* 暗色背景下，橙色稍微调暗一点点防刺眼 */
+    --link-bold-color: #bd6a13;
+    
+    /* 暗模式下的已访问：低饱和度的灰橙色 */
+    --visited-color: #7a6855; 
+    
+    --code-background-color: #0d303b; /* 与背景融合度更好的深蓝 */
+    --code-color: #eebb99;
   }
 }
-
 /* =========================================
    2. BASE STYLES (全局基础样式)
    ========================================= */
@@ -74,6 +93,10 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+ul a:visited {
+  color: var(--visited-color);
 }
 
 strong, b {
@@ -114,6 +137,17 @@ button {
 }
 ::-webkit-scrollbar-track {
   background: transparent;
+}
+
+/* === 优化：粗体链接视觉平衡 === */
+/* 针对 h1-h6 里的链接，以及 strong/b 里的链接 */
+h1 a, h2 a, h3 a, h4 a, strong a, b a, a strong, a b {
+  color: var(--link-bold-color) !important; /* 使用稍微深一点的橙色 */
+}
+
+/* 保持 hover 效果一致，悬停时还是变回鲜艳色或下划线 */
+h1 a:hover, strong a:hover {
+  color: var(--link-color) !important;
 }
 
 /* =========================================
