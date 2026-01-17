@@ -27,8 +27,12 @@ const { Content } = await project.render();
         <ProjectCard 
           project={project} 
           useExternalLink={true} 
-          customTitle={`点此访问 ${project.data.title}`}
-          customDesc="点击访问（跳转新窗口）"
+          customTitle={`查看本项目`}
+          customDesc={`
+            <p>点击此卡片访问：${project.data.title}</p>
+            <p class="highlight-url">${project.data.url}</p>
+            <p style="color: #888;">（跳转新窗口）</p>
+          `}
           showExternalIcon={true}
         />
     </div>
@@ -56,9 +60,5 @@ const { Content } = await project.render();
     max-width: 400px; /* 或者 100% 随你喜欢 */
   }
   
-  /* 简单的正文样式，增加阅读体验 */
-  .prose {
-    margin-top: 2rem;
-    line-height: 1.8;
-  }
+  
 </style>

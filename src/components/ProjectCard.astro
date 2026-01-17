@@ -33,13 +33,14 @@ const displayDesc = customDesc || project.data.description;
     <h4 class="card-title">
       {displayTitle}
     </h4>
-    <p class="card-desc">{displayDesc}</p>
+    <div class="card-desc" set:html={displayDesc} />
+ </div>
   </div>
   
   {showExternalIcon ? (
     // 🅰️ 变体模式：显示醒目的外链图标
-    // name="mdi:open-in-new" 是 Material Design 的图标，你可以换成你喜欢的
-    <Icon name="mdi:open-in-new" class="big-icon" />
+    // name="ph:arrow-square-out-bold" 是 Phosphor Design 的图标，你可以换成你喜欢的
+    <Icon name="ph:arrow-square-out-bold" class="big-icon" />
   ) : (
     // 🅱️ 默认模式：显示年份
     project.data.year && <span class="meta">[{project.data.year}]</span>
@@ -80,6 +81,23 @@ const displayDesc = customDesc || project.data.description;
     line-height: 1.5;
   }
 
+  /* 👇 新增：专门控制描述内部段落的样式 */
+  /* :global() 是为了让样式能穿透到 set:html 注入的内容里 */
+  .card-desc :global(p) {
+    margin-bottom: 0.8rem; /* 控制段落间距 */
+  }
+  .card-desc :global(p:last-child) {
+    margin-bottom: 0; /* 最后一个段落不需要下边距 */
+  }
+  
+  /* 👇 如果你想让网址那一行有点特别的样式 */
+  .card-desc :global(.highlight-url) {
+    font-weight: bold;
+    color: var(--link-color);
+    font-family: monospace;
+    word-break: break-all; /* 防止网址太长撑破卡片 */
+  }
+
   /* 年份样式 (保持不变) */
   .meta {
     margin-top: 1rem;
@@ -101,7 +119,6 @@ const displayDesc = customDesc || project.data.description;
   /* 交互：当卡片(父元素)悬停时，图标变色 */
   .card:hover .big-icon {
     color: var(--link-color); /* 变成品牌色 */
-    transform: translate(2px, -2px); /* 稍微往右上角动一下，增加点击诱导感 */
   }
 
   @media (prefers-color-scheme: dark) {

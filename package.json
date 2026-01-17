@@ -16,5 +16,13 @@
     "astro-icon": "^1.1.5",
     "markdown-it": "^14.1.0",
     "sanitize-html": "^2.13.0"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.2.18",
+    "@iconify-json/cib": "^1.2.3",
+    "@iconify-json/lucide": "^1.2.86",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/ph": "^1.2.2",
+    "@iconify-json/ri": "^1.2.7"
   }
 }
