@@ -295,28 +295,6 @@ ul.blog-posts li span {
    此样式用于 Blog, Projects, Notes 的统一展示
    ========================================= */
 
-.collection-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* 列表项间距 */
-.collection-list li {
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-/* 列表标题链接 */
-.collection-list li a {
-  text-decoration: none;
-  font-size: 1.1em;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
-}
-.collection-list li a:hover {
-  border-bottom-color: currentColor;
-}
 
 /* 元数据 (日期/年份) */
 .collection-list .meta {
@@ -330,6 +308,7 @@ ul.blog-posts li span {
 .collection-list .desc {
   display: block;
   margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
   color: #666;
   font-size: 0.95em;
 }
