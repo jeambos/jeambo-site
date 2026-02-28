@@ -67,8 +67,8 @@ Ole Martin Moen, Aleksander Sørlie
 从这种意义上来说，“设计我们的承诺”可能包含哪些事情？请看下面的“关系安那其自助餐”（Relationship Anarchist Smorgasbord，图1），它勾勒了一段关系可能会涉及的一些核心领域，并指出了每个领域内有哪些选项可以用来“设计”：
 
 ![ra-smorgasbord-2016](./_a/ra-board.jpg)
-(Image: Relationship Anarchist Smorgasbord)
-（图：关系安那其自助餐）
+
+（图1：关系安那其自助餐）
 
 这个“关系安那其自助餐”图表是本文作者根据原版修订的，原版由温哥华多边恋社群的 Lyrica Lawrence 和 Heather Orr 于 2016 年创作。（译注：该自助拼盘工具已有2025版，并且有中文版，[参见此文](https://polycn.org/library/guides/boundaries/ra-smorgasbord-zh-cn/)）
 
@@ -273,11 +273,17 @@ RA 规范的效力从何而来？正如我们在上文所指出的，RA 的正�
 * Waltzer, Michael (1983). The Spheres of Justice. New York: Basic Books.
 * York, Kyle (2020). “Why Monogamy is Morally Permissible: A Defense of Some Common Justifications for Monogamy.” The Journal of Value Inquiry 54: 539–552.
 
-The Anarchist Library Anti-Copyright
+:::note[版权信息]
+
+Original text: The Anarchist Library Anti-Copyright
+
 Ole Martin Moen, Aleksander Sørlie The Ethics of Relationship Anarchy 2022
-Retrieved on January 13, 2022 via email from author to library
-Peer-reviewed article. Reference: Ole Martin Moen & Aleksander Sørlie, “The Ethics of Relationship Anarchy,” The Routledge Handbook of Philosophy of Sex and Sexuality, edited by Brian D. Earp, Clare Chambers & Lori Watson (New York: Routledge, 2022).
-theanarchistlibrary.org
+
+Chinese translation: Jeambo 2026 Anti-Copyright
+
+[原文链接](https://theanarchistlibrary.org/library/ole-martin-moen-aleksander-sorlie-the-ethics-of-relationship-anarchy)
+
+:::
 
 [^1]: 译者注：anarchism，一般称为无政府主义，更精确（但不常用）的说法是无治主义。本文选用传播较广的译法：安那其主义。
 
