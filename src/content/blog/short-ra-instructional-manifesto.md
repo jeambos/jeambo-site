@@ -28,6 +28,12 @@ draft: false
 editUrl: false
 ---
 
+作者：Andie Nordgren
+
+原文年代：2006
+
+译者：Jeambo
+
 这是笔者（Andie Nordgren）对自己所写的关系安那其小册子的英文新译本/改编本。该小册子曾以瑞典语标题“Relationsanarki i 8 punkter”由 [Interacting Arts](http://www.interactingarts.org/) 于 2006 年出版。更多瑞典语内容请见[http://www.andie.se/](http://www.andie.se) —— 这是我在 2004 至 2008 年间活跃运营的网站，我和其他人曾在那里定义了关系安那其的概念并持续探索。
 
 ### 爱是丰盈的，每段关系都是独特的

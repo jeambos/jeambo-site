@@ -30,7 +30,10 @@ editUrl: false
 
 Ole Martin Moen, Aleksander Sørlie
 
-2022
+原文年代：2022
+
+译者：Jeambo
+
 
 ## 1. 导言
 
